@@ -1,0 +1,40 @@
+name: Push
+
+on:
+    push:
+
+jobs:
+    Build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Install dependencies
+              run: |
+                  npm install
+            - name: Build package
+              run: |
+                  npm run build
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: rockerreactor-${{ github.run_id }}.zip
+                  path: build/
+    Formatting:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Install dependencies
+              run: |
+                  npm install
+            - name: ESLint
+              run: |
+                  npx eslint .
+    Testing:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Install dependencies
+              run: |
+                  npm install
+            - name: Run tests
+              run: |
+                  npm run test
