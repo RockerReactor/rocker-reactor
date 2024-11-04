@@ -12,6 +12,7 @@ body {
 .column {
   float: left;
   padding: 10px;
+  
 }
 
 /* Left and right column */
@@ -20,6 +21,9 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr; /* Two equal-width columns */
   gap: 10px; /* Space between items */
+  white-space: nowrap; 
+  border-color: red;
+  border: 5px double red;
 }
 
 
@@ -35,8 +39,8 @@ body {
 .parIn{
   border-left: 5px;
   padding: 5px;
-  width: 20%;
-  align-content: center;
+  width: 70px;
+  align-content: top;
 }
 
 /* Clear floats after the columns */
@@ -48,21 +52,38 @@ body {
 
 /* Responsive layout - makes the columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 600px) {
-  .column.side, .column.middle {
+  .column.control, .column.view {
     width: 100%;
   }
 }
 
 .parbox{
-  width: 50%;
-  padding-bottom: 10px;
-  
-}
-.parameter {
-  border-width: 20px;
-  border-color: green;
-  display: grid;
-  grid-template-columns: 5fr 1fr 1fr;
+  width: 100%;
+  padding: 2px;
   
 }
 
+.parameter {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  white-space: nowrap; 
+  border-color: red;
+  border: 5px double red;
+}
+
+.parText {
+  font-size: x-small;
+  text-align: center;
+  
+}
+
+.parameter .right {
+  align-items: left;
+}
+
+.test {
+  white-space: nowrap; 
+  border-color: red;
+  border: 5px double red;
+  width: 100%;
+}

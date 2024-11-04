@@ -14,30 +14,30 @@ function App() {
 
         <div className="row">
           <div className="column control">
-            <div className="row">
+            <div className="row test">
               <div className="column parbox">
                 <div className='parameter'>
-                  <label htmlFor="parIn">Step Size </label>
+                  <label className='parText parIn'>Step Size </label>
                   <input className='parIn' type='text'></input>
-                  <label htmlFor="parIn"> °</label>
+                  <label className='parText parIn'>°</label>
                 </div>
                 <div className='parameter'>
-                  <label htmlFor="parIn">Power Min </label>
+                  <label className='parText parIn'>Power Min </label>
                   <input className='parIn' type='text'></input>
-                  <label htmlFor="parIn"> V</label>
+                  <label className='parText parIn'>V</label>
                 </div>
               </div>
               <div className="column parbox">
-              <div className='parameter'>
-                <label htmlFor="parIn">Cycles </label>
-                <input className='parIn' type='text'></input>
-                <label htmlFor="parIn"> °</label>
-              </div>
-              <div className='parameter'>
-                <label htmlFor="parIn">Power Max </label>
-                <input className='parIn' type='text'></input>
-                <label htmlFor="parIn"> V</label>
-              </div>
+                <div className='parameter right'>
+                  <label className='parText parIn'>Cycles </label>
+                  <input className='parIn' type='text'></input>
+                  <label className='parText parIn'>°</label>
+                </div>
+                <div className='parameter right'>
+                  <label className='parText parIn'>Power Max </label>
+                  <input className='parIn' type='text'></input>
+                  <label className='parText parIn'>V</label>
+                </div>
               </div>
             </div>
           </div>
