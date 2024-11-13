@@ -19,7 +19,7 @@ body {
 .column.control {
   width: 45%;
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+  /*grid-template-columns: 1fr 1fr; /* Two equal-width columns */
   gap: 10px; /* Space between items */
   white-space: nowrap; 
   border-color: red;
@@ -39,7 +39,7 @@ body {
 .parIn{
   border-left: 5px;
   padding: 5px;
-  width: 70px;
+  width: 50px;
   align-content: top;
 }
 
@@ -51,34 +51,41 @@ body {
 }
 
 /* Responsive layout - makes the columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
   .column.control, .column.view {
     width: 100%;
   }
 }
 
 .parbox{
+  
   width: 100%;
   padding: 2px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  
   
 }
 
 .parameter {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 0fr 0fr;
   white-space: nowrap; 
   border-color: red;
   border: 5px double red;
+  width: inherit;
+  
 }
 
 .parText {
-  font-size: x-small;
+  font-size: normal;
   text-align: center;
+  
   
 }
 
 .parameter .right {
-  align-items: left;
+  align-items: right;
 }
 
 .test {
@@ -86,4 +93,32 @@ body {
   border-color: red;
   border: 5px double red;
   width: 100%;
+  width: 100%;
+}
+
+.instructionset {
+  background-color: black;
+  padding: 10px;
+  height: 800px;
+}
+
+.instruction {
+  display: grid;
+  grid-template-columns: 1fr 0fr 1fr 0fr 1fr;
+  padding: 10px;
+ 
+  background-color: gray;
+  margin-top: 20px;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: 2fr,1fr,1fr,1fr,1fr;
+  padding: 10px;
+  all : unset;
+}
+
+.tbbutton{
+  width: 100%;
+  
 }

@@ -19,7 +19,7 @@ function App() {
                 <div className='parameter'>
                   <label className='parText parIn'>Step Size </label>
                   <input className='parIn' type='text'></input>
-                  <label className='parText parIn'>°</label>
+                  <label className='parText parIn'>∠</label>
                 </div>
                 <div className='parameter'>
                   <label className='parText parIn'>Power Min </label>
@@ -39,6 +39,36 @@ function App() {
                   <label className='parText parIn'>V</label>
                 </div>
               </div>
+            </div>
+            <div className='instructionset'>
+              <div className='instruction'>
+                  <label> Rotation 1</label>
+                  <label className='parText parIn'>∠</label>
+                  <input className='parIn' type='text'></input>
+                  <label className='parText parIn'>T</label>
+                  <input className='parIn' type='text'></input>
+              </div>
+              <div className='instruction'>
+                  <label> Rotation 2</label>
+                  <label className='parText parIn'>∠</label>
+                  <input className='parIn' type='text'></input>
+                  <label className='parText parIn'>T</label>
+                  <input className='parIn' type='text'></input>
+              </div>
+              <div className='instruction'>
+                  <label> Rotation 3</label>
+                  <label className='parText parIn'>∠</label>
+                  <input className='parIn' type='text'></input>
+                  <label className='parText parIn'>T</label>
+                  <input className='parIn' type='text'></input>
+              </div>
+            </div>
+            <div className="toolbar">
+              <button type = "button" id = "run tbbutton">RUN</button>
+              <button type = "button" id = "import tbbutton">I</button>
+              <button type = "button" id = "save tbbutton">S</button>
+              <button type = "button" id = "loop tbbutton">L</button>
+              <button type = "button" id = "add tbbutton">+</button>
             </div>
           </div>
   
