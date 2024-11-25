@@ -21,6 +21,8 @@ const SerialInterface: React.FC = () => {
 	const [AngleStep, setAngleStep] = useState<number>(10); // Default AngleStep
 	const [position, setPosition] = useState<number>(0); // Current position from Arduino
 
+	const [connected, setConnected] = useState<boolean>(false);
+
 	/**
 	 * Connect to the serial port selected by the user.
 	 */
@@ -53,6 +55,7 @@ const SerialInterface: React.FC = () => {
 				readLoop(); // Start reading data from Arduino
 
 				console.log("Connected to serial port");
+				setConnected(true);
 			} catch (error) {
 				console.error("Error connecting to serial port:", error);
 			}
@@ -80,6 +83,7 @@ const SerialInterface: React.FC = () => {
 				setPort(null);
 			}
 			console.log("Disconnected from serial port");
+			setConnected(false);
 		} catch (error) {
 			console.error("Error disconnecting from serial port:", error);
 		}
@@ -203,6 +207,7 @@ const SerialInterface: React.FC = () => {
 	 */
 	const sendMovementCommand = async (desiredPosition: number) => {
 		// Construct command string
+		logMovement(1, 2);
 		const command = `g${desiredPosition}`;
 		await sendCommand(command);
 	};
@@ -250,14 +255,31 @@ const SerialInterface: React.FC = () => {
 	};
 
 	// Clean up on component unmount
-	useEffect(() => {
+	// This might be broken for today just rely on GC hopefully
+	/**useEffect(() => {
 		return () => {
 			disconnect();
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+	**/
 
-	return null;
+	useEffect(() => {
+		connect();
+	}, [connect, connected]);
+
+	return (
+		<div>
+			<div id="buttons">
+				<button onClick={() => sendMovementCommand(90)}>
+					Move it!
+				</button>
+				<button onClick={() => sendMovementCommand(0)}>Reset</button>
+			</div>
+			<br />
+			<div id="log">{log.join("\n")}</div>
+		</div>
+	);
 };
 
 export default SerialInterface;
