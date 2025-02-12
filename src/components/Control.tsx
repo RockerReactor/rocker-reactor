@@ -60,6 +60,11 @@ const Control = () => {
         addLog(`Added movement: ${angle}° for ${duration}s`);
     };
 
+    const removeMovementAction = (index: any) => {
+        setMovementSequence((prev: any[]) => prev.filter((_, i) => i !== index));
+        addLog(`Removed movement at index ${index}`);
+    };
+
     return (
         <div>
             <h2>Control</h2>
