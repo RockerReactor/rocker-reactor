@@ -1,10 +1,10 @@
 ---
-name: Custom Task
+name: Task
 about: Custom issue to describe the progress of a task or feature
 title: ''
 labels: ''
 assignees: ''
-
+type: "Task"
 ---
 
 <ins>**Please be sure to**</ins>
