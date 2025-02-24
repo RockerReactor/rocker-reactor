@@ -6,119 +6,74 @@ body {
   margin: 0;
 }
 
-
-
-/* Create three unequal columns that floats next to each other */
+/* Layout */
 .column {
   float: left;
   padding: 10px;
-  
 }
 
-/* Left and right column */
 .column.control {
   width: 45%;
   display: grid;
-  /*grid-template-columns: 1fr 1fr; /* Two equal-width columns */
-  gap: 10px; /* Space between items */
-  white-space: nowrap; 
-  border-color: red;
+  gap: 10px;
+  white-space: nowrap;
   border: 5px double red;
-}
-
-
-/* Middle column */
-.column.view {
-  width: 55%;
-}
-
-.parIn #label {
-  border-right: 5px;
-}
-
-.parIn{
-  border-left: 5px;
-  padding: 5px;
-  width: 50px;
-  align-content: top;
-}
-
-/* Clear floats after the columns */
-.row::after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-/* Responsive layout - makes the columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 800px) {
-  .column.control, .column.view {
-    width: 100%;
-  }
-}
-
-.parbox{
-  
-  width: 100%;
-  padding: 2px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  
-  
-}
-
-.parameter {
-  display: grid;
-  grid-template-columns: 1fr 0fr 0fr;
-  white-space: nowrap; 
-  border-color: red;
-  border: 5px double red;
-  width: inherit;
-  
-}
-
-.parText {
-  font-size: normal;
-  text-align: center;
-  
-  
-}
-
-.parameter .right {
-  align-items: right;
-}
-
-.test {
-  white-space: nowrap; 
-  border-color: red;
-  border: 5px double red;
-  width: 100%;
-  width: 100%;
 }
 
 .instructionset {
   background-color: black;
   padding: 10px;
   height: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
+/* Instruction Box */
 .instruction {
-  display: grid;
-  grid-template-columns: 1fr 0fr 1fr 0fr 1fr;
-  padding: 10px;
- 
+  display: flex;
+  align-items: center;
   background-color: gray;
-  margin-top: 20px;
-}
-
-.toolbar {
-  display: grid;
-  grid-template-columns: 2fr,1fr,1fr,1fr,1fr;
   padding: 10px;
-  all : unset;
+  margin-top: 5px;
+  border-radius: 5px;
 }
 
-.tbbutton{
+/* Move Buttons (Up/Down) */
+.move-button {
+  margin-left: 5px;
+  cursor: pointer;
+  padding: 5px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  font-size: 14px;
+  border-radius: 3px;
+}
+
+.move-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Remove Button */
+.remove-button {
+  margin-left: 5px;
+  cursor: pointer;
+  padding: 5px;
+  border: none;
+  background-color: red;
+  color: white;
+  font-size: 14px;
+  border-radius: 3px;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  padding: 10px;
+}
+
+#add.tbbutton {
   width: 100%;
-  
 }
