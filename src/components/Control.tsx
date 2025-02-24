@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import AppContext from "../context/AppContext";
+import MovementFileManager from "./MovementFileManager";
 
 const Control = () => {
     const { connected, setConnected, sendCommand, addLog, setPort, setWriter, setReader, startMovementLoop, stopMovementLoop, setMovementSequence } = useContext(AppContext);
@@ -79,6 +80,8 @@ const Control = () => {
             <h3>Execution</h3>
             <button onClick={startMovementLoop}>Start Sequence</button>
             <button onClick={stopMovementLoop}>Stop Sequence</button>
+
+            <MovementFileManager />
         </div>
     );
 };
