@@ -19,7 +19,13 @@ const Control = () => {
 	const [duration, setDuration] = useState(1);
 
 	const connect = async () => {
+		if (!("serial" in navigator)) {
+			addLog("Web Serial API not supported.");
+			return;
+		}
+
 		if ("serial" in navigator) {
+			//* Should log connection progress
 			try {
 				const selectedPort = await navigator.serial.requestPort();
 				await selectedPort.open({ baudRate: 9600 });
