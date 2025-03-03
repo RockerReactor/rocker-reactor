@@ -6,6 +6,8 @@ export const AppProvider = ({ children }) => {
     const [port, setPort] = useState(null);
     const [writer, setWriter] = useState(null);
     const [reader, setReader] = useState(null);
+    const [readableStreamClosed, setReadableStreamClosed] = useState(null);
+    const [writableStreamClosed, setWritableStreamClosed] = useState(null);
     const [movementSequence, setMovementSequence] = useState([]);
     const [log, setLog] = useState([]);
     const [PWM, setPWM] = useState(175);
@@ -22,8 +24,9 @@ export const AppProvider = ({ children }) => {
     const sendCommand = async (command) => {
         if (writer) {
             try {
+                addLog(`Attempting to send: ${command}`);
                 await writer.write(command + "\n");
-                addLog(`Sent command: ${command}`);
+                addLog(`Command sent: ${command}`);
             } catch (error) {
                 addLog(`Error writing to serial port: ${error}`);
             }
@@ -43,12 +46,22 @@ export const AppProvider = ({ children }) => {
 
         setIsRunning(true);
         addLog("Starting movement sequence...");
+        addLog(movementSequence.length)
+
+        if (movementSequence.length === 0) {
+            addLog("No movement actions found. Exiting StartMovementLoop.");
+            setIsRunning(false);
+            return;
+        }
 
         while (isRunning) {
+            addLog("I'm running");
             for (const action of movementSequence) {
+                addLog(`Processing movement: ${action.angle}° for ${action.duration}s`);
                 if (!isRunning) break;
                 
                 const desiredPosition = mapAngleToAnalog(action.angle);
+                addLog("Trying to send movement command");
                 await sendCommand(`g${desiredPosition}`);
                 addLog(`Moved to Angle: ${action.angle}°`);
 
@@ -69,7 +82,9 @@ export const AppProvider = ({ children }) => {
             movementSequence, setMovementSequence, log, addLog,
             PWM, setPWM, SPWM, setSPWM, AngleStep, setAngleStep, 
             position, setPosition, connected, setConnected,
-            sendCommand, startMovementLoop, stopMovementLoop
+            sendCommand, startMovementLoop, stopMovementLoop, 
+            readableStreamClosed, writableStreamClosed,
+            setReadableStreamClosed, setWritableStreamClosed
         }}>
             {children}
         </AppContext.Provider>
