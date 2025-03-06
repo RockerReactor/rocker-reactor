@@ -7,28 +7,34 @@ body {
 }
 
 /*Layout*/
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .column {
-  float: left;
+  flex: 1;
   padding: 10px;
 }
 
 .column.control {
-  width: 30%;
+  flex: 0 0 30%; /* Set to a fixed 30% for the left panel */
+  max-width: 100%;
+  min-width: 375px; /* To ensure it doesn't exceed this width */
   display: grid;
   gap: 10px;
   white-space: nowrap;
-  border: 5px double red;
-  overflow: scroll;
-  height: 100%;
+  border: 5px groove#4e9fd1;
+  height: 100vh;
 }
 
 .instructionset {
   background-color: black;
   padding: 10px;
-  height: 800px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow: scroll;
 }
 
 /*Instruction Box*/
@@ -37,7 +43,6 @@ body {
   align-items: center;
   background-color: gray;
   padding: 10px;
-  margin-top: 5px;
   border-radius: 5px;
 }
 
@@ -53,12 +58,18 @@ body {
   border-radius: 3px;
 }
 
+.move-button:hover {
+  background-color: #ccc;
+  color: #000;
+}
+
 .move-button:disabled {
   background-color: #ccc;
+  color: #000;
   cursor: not-allowed;
 }
 
-/* Remove Button */
+/*Remove Button*/
 .remove-button {
   margin-left: 5px;
   cursor: pointer;
@@ -70,26 +81,41 @@ body {
   border-radius: 3px;
 }
 
-/* Toolbar */
+.remove-button:hover {
+  background-color: #a00;
+}
+
+/*Toolbar*/
 .toolbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   padding: 10px;
+  height: 15vh;
+  min-height: 100px;
 }
 
-#add.tbbutton {
+.tbbutton {
   width: 100%;
+  font-size: large;
+  padding: 10px 20px;
+  background-color: #4e9fd1;
+  color: black;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  height: 7vh;
+  min-height: 40px;
 }
 
-.parIn{
+.tbbutton:hover {
+  background-color: #3e8fc1;
+}
+
+.parIn {
   width: 60px;
 }
 
-.instructionset{
-  height: 600px;
-  overflow: scroll;
-}
-
-.parText{
+.parText {
   display: inline-block;
   width: 40px;
   text-align: right;
@@ -103,11 +129,14 @@ body {
   justify-content: flex-end;
   min-width: 80px;
 }
+
 .setupParbox {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   padding: 20px;
+  height: 15vh;
+  min-height: 75px;
 }
 
 .setupParam {
@@ -132,7 +161,60 @@ body {
   background-color: #f8d7da;
 }
 
-
 .parIn.invalid:hover {
   background-color: #f5c6cb;
 }
+
+.looping {
+  background-color: #3cbf20;
+  color: white;
+  border: 1px solid #388e3c;
+}
+
+.looping:hover {
+  background-color: #4caf50;
+}
+
+.running {
+  background-color: red;
+}
+
+.running:hover {
+  background-color: #a00;
+}
+
+/* Scrollbar Styling */
+.instructionset::-webkit-scrollbar {
+  width: 10px;
+}
+
+.instructionset::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+}
+
+.instructionset::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+  }
+
+  .column.control {
+    min-height: 100vh;
+    flex: 1 1 100%; /* Makes the control column take full width on smaller screens */
+  }
+}
+
+.console{
+  background-color: #000;
+  color: #fff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  padding: 2px;
+  height: 90vh;
+  overflow: scroll;
+}
+
