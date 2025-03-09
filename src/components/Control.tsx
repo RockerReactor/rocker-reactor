@@ -37,71 +37,69 @@ const Control = () => {
                 setReadableStreamClosed(readableStreamClosed);
                 setWritableStreamClosed(writableStreamClosed);
                 setConnected(true);
-                addLog("Connected to serial port.");
+                console.log("Connected to serial port.");
             } catch (error) {
-                addLog(`Error connecting: ${error}`);
+                console.error("Error connecting:", error);
             }
         } else {
-            addLog("Web Serial API not supported.");
+            console.log("Web Serial API not supported.");
         }
     };
 
     const disconnect = async () => {
         try {
-            addLog("Starting disconnect process...");
-
+            console.log("Starting disconnect process...");
             if (reader) {
-                addLog("Attempting to cancel and release reader...");
+                console.log("Attempting to cancel and release reader...");
                 try {
                     await reader.cancel();
                     await readableStreamClosed.catch(() => { addLog("Reader cancelation error ignored."); });
                     await reader.releaseLock();
-                    addLog("Reader canceled and released.");
-                } catch (err) {
-                    addLog(`Error canceling reader: ${err}`);
+                    console.log("Reader canceled and released.");
+                } catch (error) {
+                    console.error("Error canceling reader:", error);
                 }
                 setReader(null);
             }
     
             if (writer) {
-                addLog("Attempting to close and release writer...");
+                console.log("Attempting to close and release writer...");
                 try {
                     await writer.close();
                     await writableStreamClosed;
                     await writer.releaseLock();
-                    addLog("Writer closed and released.");
-                } catch (err) {
-                    addLog(`Error closing writer: ${err}`);
+                    console.log("Writer closed and released.");
+                } catch (error) {
+                    console.error("Error closing writer:", error);
                 }
                 setWriter(null);
             }
     
             if (port) {
                 try {
-                    addLog("Attempting to release streams before closing port...");
+                    console.log("Attempting to release streams before closing port...");
                     if (port.readable) {
                         //await port.readable.cancel();
                         //await port.readable.pipeTo(new WritableStream()).catch(() => {});
-                        addLog("Readable stream drained.");
+                        console.log("Readable stream drained.");
                     }
                     if (port.writable) {
                         //await port.writable.close();
-                        addLog("Writable stream closed.");
+                        console.log("Writable stream closed.");
                     }
-                    
-                    addLog("Attempting to close serial port...");
+                    console.log("Attempting to close serial port...");
                     await port.close();
-                    addLog("Port closed successfully.");
-                } catch (err) {
-                    addLog(`Error closing port: ${err}`);
+                    console.log("Port closed successfully.");
+                } catch (error) {
+                    console.error("Error closing port:", error);
                 }
                 setPort(null);
             }
     
             setConnected(false);
-            addLog("Disconnected successfully.");
+            console.log("Disconnected successfully.");
         } catch (error) {
-            addLog(`Error disconnecting: ${error}`);
+            console.error("Error disconnecting:", error);
         }
     };
     
