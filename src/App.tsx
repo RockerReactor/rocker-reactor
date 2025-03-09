@@ -17,7 +17,7 @@ function App() {
   const [isLooping, setIsLooping] = useState(false);
   const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
 
-  const instructionSetRef = useRef<HTMLDivElement | null>(null); // Reference to the instruction set
+  const instructionSetRef = useRef<HTMLDivElement | null>(null); //Reference to the instruction set
 
   //Function to update the height of instructionset
   const updateInstructionSetHeight = () => {
@@ -32,11 +32,11 @@ function App() {
   };
 
   useEffect(() => {
-    updateInstructionSetHeight(); // Set height initially
-    window.addEventListener("resize", updateInstructionSetHeight); // Recalculate on resize
+    updateInstructionSetHeight(); //Set height initially
+    window.addEventListener("resize", updateInstructionSetHeight); //Recalculate on resize
 
     return () => {
-      window.removeEventListener("resize", updateInstructionSetHeight); // Clean up the event listener
+      window.removeEventListener("resize", updateInstructionSetHeight); //Clean up the event listener
     };
   }, []);
 

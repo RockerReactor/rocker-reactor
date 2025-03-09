@@ -18,9 +18,9 @@ body {
 }
 
 .column.control {
-  flex: 0 0 30%; /* Set to a fixed 30% for the left panel */
+  flex: 0 0 30%; 
   max-width: 100%;
-  min-width: 375px; /* To ensure it doesn't exceed this width */
+  min-width: 375px; 
   display: grid;
   gap: 10px;
   white-space: nowrap;
@@ -183,7 +183,7 @@ body {
   background-color: #a00;
 }
 
-/* Scrollbar Styling */
+/*Scrollbar Styling*/
 .instructionset::-webkit-scrollbar {
   width: 10px;
 }
@@ -197,7 +197,7 @@ body {
   background-color: #555;
 }
 
-/* Mobile Responsiveness */
+/*Mobile Responsiveness*/
 @media (max-width: 768px) {
   .row {
     flex-direction: column;
@@ -205,7 +205,7 @@ body {
 
   .column.control {
     min-height: 100vh;
-    flex: 1 1 100%; /* Makes the control column take full width on smaller screens */
+    flex: 1 1 100%; 
   }
 }
 
