@@ -106,12 +106,12 @@ const Control = () => {
 
     const addMovementAction = () => {
         setMovementSequence((prev: any) => [...prev, { angle, duration }]);
-        addLog(`Added movement: ${angle}° for ${duration}s`);
+        console.log("Added movement: ${angle}° for ${duration}s");
     };
 
     const removeMovementAction = (index: any) => {
         setMovementSequence((prev: any[]) => prev.filter((_, i) => i !== index));
-        addLog(`Removed movement at index ${index}`);
+        console.log("Removed movement at index ${index}");
     };
 
     return (
