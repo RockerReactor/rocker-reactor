@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
+import { useContext } from "react";
+import AppContext from "./context/AppContext";
+import Config from "./components/Config"
+import Control from "./components/Control"
+import Log from "./components/Log"
+import AddButton from "./components/toolbar/AddButton";
 
 interface Instruction {
   id: string;
@@ -7,6 +13,8 @@ interface Instruction {
 }
 
 function App() {
+  const { PWM, setPWM, SPWM, setSPWM, AngleStep, setAngleStep, writer, addLog, sendConfigCommand } = useContext(AppContext);
+
   const [instructions, setInstructions] = useState<Instruction[]>([
     { id: "1", label: "Rotation 1" },
     { id: "2", label: "Rotation 2" },
@@ -64,13 +72,34 @@ function App() {
     console.log("Calibrate functionality to be implemented later.");
   };
 
-  const handleInputChange = (id: string, value: string) => {
+const handleInputChange = (id: string, value: string) => {
     const isValid = value === "" || !isNaN(Number(value));
     setInputErrors((prevErrors) => ({
-      ...prevErrors,
-      [id]: !isValid,
+        ...prevErrors,
+        [id]: !isValid,
     }));
-  };
+
+    if (isValid) {
+        const numValue = Number(value);
+        switch (id) {
+            case "stepSize":
+                setAngleStep(numValue);
+                sendConfigCommand(`a${numValue}`);
+                break;
+            case "powerMin":
+                setSPWM(numValue);
+                sendConfigCommand(`s${numValue}`);
+                break;
+            case "powerMax":
+                setPWM(numValue);
+                sendConfigCommand(`p${numValue}`);
+                break;
+            default:
+                break;
+        }
+    }
+};
+
 
   const moveInstruction = (index: number, direction: number) => {
     const newIndex = index + direction;
@@ -124,93 +153,12 @@ function App() {
         <div className="column control">
           <div className="row test">
             {/*Setup Parameters*/}
-            <div className="setupParbox">
-              <div className="setupParam">
-                <label className="setupText">Step Size </label>
-                <input
-                  className={`parIn ${inputErrors["stepSize"] ? "invalid" : ""}`}
-                  type="text"
-                  onChange={(e) => handleInputChange("stepSize", e.target.value)}
-                />
-                <label className="setupSym">∠</label>
-              </div>
-              <div className="setupParam">
-                <label className="setupText">Power Min </label>
-                <input
-                  className={`parIn ${inputErrors["powerMin"] ? "invalid" : ""}`}
-                  type="text"
-                  onChange={(e) => handleInputChange("powerMin", e.target.value)}
-                />
-                <label className="setupSym">V</label>
-              </div>
-              <div className="setupParam">
-                <label className="setupText">Cycles </label>
-                <input
-                  className={`parIn ${inputErrors["cycles"] ? "invalid" : ""}`}
-                  type="text"
-                  onChange={(e) => handleInputChange("cycles", e.target.value)}
-                />
-                <label className="setupSym">↻</label>
-              </div>
-              <div className="setupParam">
-                <label className="setupText">Power Max </label>
-                <input
-                  className={`parIn ${inputErrors["powerMax"] ? "invalid" : ""}`}
-                  type="text"
-                  onChange={(e) => handleInputChange("powerMax", e.target.value)}
-                />
-                <label className="setupSym">V</label>
-              </div>
-            </div>
+              <Config />
           </div>
+        
 
           {/*Instruction Set*/}
-          <div ref={instructionSetRef} className="instructionset">
-            {instructions.map((instruction, index) => (
-              <div className="instruction" key={instruction.id}>
-                <label>{instruction.label}</label>
-                <label className="parText parIn">∠</label>
-                <input
-                  className={`parIn ${
-                    inputErrors[`rotation-${instruction.id}-angle`] ? "invalid" : ""
-                  }`}
-                  type="text"
-                  onChange={(e) =>
-                    handleInputChange(`rotation-${instruction.id}-angle`, e.target.value)
-                  }
-                />
-                <label className="parText parIn">T</label>
-                <input
-                  className={`parIn ${
-                    inputErrors[`rotation-${instruction.id}-time`] ? "invalid" : ""
-                  }`}
-                  type="text"
-                  onChange={(e) =>
-                    handleInputChange(`rotation-${instruction.id}-time`, e.target.value)
-                  }
-                />
-                <div className="button-container">
-                  <button
-                    className="move-button"
-                    onClick={() => moveInstruction(index, -1)}
-                    disabled={index === 0}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    className="move-button"
-                    onClick={() => moveInstruction(index, 1)}
-                    disabled={index === instructions.length - 1}
-                  >
-                    ↓
-                  </button>
-                  <button className="remove-button" onClick={() => handleRemove(instruction.id)}>
-                    −
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Control />
 
           {/*Toolbar*/}
           <div className="toolbar">
@@ -236,9 +184,7 @@ function App() {
             >
               🔁
             </button>
-            <button type="button" id="add" className="tbbutton" onClick={handleAdd}>
-              ➕
-            </button>
+            <AddButton />
             <button type="button" id="help" className="tbbutton" onClick={handleHelp}>
               ❓
             </button>
@@ -250,15 +196,7 @@ function App() {
 
         {/*Right Side*/}
         <div className="column view">
-          <div className="console">
-            <div className="console-output">
-              {consoleMessages.length === 0 ? (
-                <p>No messages yet...</p>
-              ) : (
-                consoleMessages.map((msg, index) => <p key={index}>{msg}</p>)
-              )}
-            </div>
-          </div>
+          <Log />
         </div>
       </div>
     </div>

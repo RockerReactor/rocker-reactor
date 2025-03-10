@@ -1,147 +1,117 @@
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useContext, useState } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import AppContext from "../context/AppContext";
-import MovementFileManager from "./MovementFileManager";
+import "../App.css";
 
 const Control = () => {
-    const { connected, setConnected, sendCommand, addLog, setPort, setWriter, setReader, 
-        startMovementLoop, stopMovementLoop, movementSequence, setMovementSequence, reader, 
-        writer, port, readableStreamClosed, setReadableStreamClosed, writableStreamClosed,
-        setWritableStreamClosed } = useContext(AppContext);
+    const {
+        movementSequence,
+        setMovementSequence,
+        addLog
+    } = useContext(AppContext);
 
-    const [angle, setAngle] = useState(45);
-    const [duration, setDuration] = useState(1);
+    const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
+    const instructionSetRef = useRef<HTMLDivElement | null>(null);
 
-    const connect = async () => {
-        if ("serial" in navigator) {
-            try {
-                const selectedPort = await navigator.serial.requestPort();
-                await selectedPort.open({ baudRate: 9600 });
+    // Function to update the height of instruction set dynamically
+    const updateInstructionSetHeight = () => {
+        if (instructionSetRef.current) {
+            const controlHeight = document.querySelector(".column.control")?.clientHeight || 0;
+            const toolbarHeight = document.querySelector(".toolbar")?.clientHeight || 0;
+            const setupParboxHeight = document.querySelector(".setupParbox")?.clientHeight || 0;
+            const remainingHeight = controlHeight - toolbarHeight - (2 * setupParboxHeight);
 
-                const textEncoder = new TextEncoderStream();
-
-                const writableStreamClosed = selectedPort.writable && 
-                textEncoder.readable.pipeTo(selectedPort.writable);
-
-                const portWriter = textEncoder.writable.getWriter();
-
-                const textDecoder = new TextDecoderStream();
-
-                const readableStreamClosed = selectedPort.readable && 
-                selectedPort.readable.pipeTo(textDecoder.writable);
-
-                const portReader = textDecoder.readable.getReader();
-
-                setPort(selectedPort);
-                setWriter(portWriter);
-                setReader(portReader);
-                setReadableStreamClosed(readableStreamClosed);
-                setWritableStreamClosed(writableStreamClosed);
-                setConnected(true);
-                addLog("Connected to serial port.");
-            } catch (error) {
-                addLog(`Error connecting: ${error}`);
-            }
-        } else {
-            addLog("Web Serial API not supported.");
+            instructionSetRef.current.style.height = `${remainingHeight}px`;
         }
     };
 
-    const disconnect = async () => {
-        try {
-            addLog("Starting disconnect process...");
+    useEffect(() => {
+        updateInstructionSetHeight(); // Set height initially
+        window.addEventListener("resize", updateInstructionSetHeight); // Recalculate on resize
 
-            if (reader) {
-                addLog("Attempting to cancel and release reader...");
-                try {
-                    await reader.cancel();
-                    await readableStreamClosed.catch(() => { addLog("Reader cancelation error ignored."); });
-                    await reader.releaseLock();
-                    addLog("Reader canceled and released.");
-                } catch (err) {
-                    addLog(`Error canceling reader: ${err}`);
-                }
-                setReader(null);
-            }
-    
-            if (writer) {
-                addLog("Attempting to close and release writer...");
-                try {
-                    await writer.close();
-                    await writableStreamClosed;
-                    await writer.releaseLock();
-                    addLog("Writer closed and released.");
-                } catch (err) {
-                    addLog(`Error closing writer: ${err}`);
-                }
-                setWriter(null);
-            }
-    
-            if (port) {
-                try {
-                    addLog("Attempting to release streams before closing port...");
-                    if (port.readable) {
-                        //await port.readable.cancel();
-                        //await port.readable.pipeTo(new WritableStream()).catch(() => {});
-                        addLog("Readable stream drained.");
-                    }
-                    if (port.writable) {
-                        //await port.writable.close();
-                        addLog("Writable stream closed.");
-                    }
-                    
-                    addLog("Attempting to close serial port...");
-                    await port.close();
-                    addLog("Port closed successfully.");
-                } catch (err) {
-                    addLog(`Error closing port: ${err}`);
-                }
-                setPort(null);
-            }
-    
-            setConnected(false);
-            addLog("Disconnected successfully.");
-        } catch (error) {
-            addLog(`Error disconnecting: ${error}`);
-        }
-    };
-    
+        return () => {
+            window.removeEventListener("resize", updateInstructionSetHeight); // Cleanup
+        };
+    }, []);
 
-    const addMovementAction = () => {
-        setMovementSequence((prev: any) => [...prev, { angle, duration }]);
-        addLog(`Added movement: ${angle}° for ${duration}s`);
+    const handleInputChange = (id: string, value: string) => {
+        const isValid = value === "" || !isNaN(Number(value));
+        setInputErrors((prevErrors) => ({
+            ...prevErrors,
+            [id]: !isValid,
+        }));
     };
 
-    const removeMovementAction = (index: any) => {
-        setMovementSequence((prev: any[]) => prev.filter((_, i) => i !== index));
-        addLog(`Removed movement at index ${index}`);
+    const moveInstruction = (index: number, direction: number) => {
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= movementSequence.length) return;
+
+        const updatedInstructions = [...movementSequence];
+        const [movedItem] = updatedInstructions.splice(index, 1);
+        updatedInstructions.splice(newIndex, 0, movedItem);
+
+        setMovementSequence(updatedInstructions);
+        addLog(`Moved instruction from index ${index} to ${newIndex}`);
+    };
+
+    const handleAdd = () => {
+        const newId = (movementSequence.length + 1).toString();
+        setMovementSequence([
+            ...movementSequence,
+            { id: newId, label: `Rotation ${newId}` },
+        ]);
+        console.log(`Added new instruction: Rotation ${newId}`);
+    };
+
+    const handleRemove = (id: string) => {
+        setMovementSequence(movementSequence.filter((instruction: any) => instruction.id !== id));
+        addLog(`Removed instruction: ${id}`);
     };
 
     return (
         <div>
-            <h2>Control</h2>
-            <button onClick={connect} disabled={connected}>Connect</button>
-            <button onClick={disconnect} disabled={!connected}>Disconnect</button>
-
-            <h3>Movement Sequence</h3>
-            <label>Angle: <input type="number" value={angle} onChange={(e) => setAngle(Number(e.target.value))} /></label>
-            <label>Duration (s): <input type="number" value={duration} onChange={(e) => setDuration(Number(e.target.value))} /></label>
-            <button onClick={addMovementAction}>Add Movement</button>
-
-            <h3>Current Movement Actions</h3>
-            <ul>
-                {movementSequence.map((action: { angle: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; duration: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }, index: Key | null | undefined) => (
-                    <li key={index}>
-                        Angle: {action.angle}°, Duration: {action.duration}s
-                        <button onClick={() => removeMovementAction(index)}>Remove</button>
-                    </li>
+            {/* Instruction Set UI */}
+            <div ref={instructionSetRef} className="instructionset">
+                {movementSequence.map((instruction: any, index: any) => (
+                    <div className="instruction" key={instruction.id}>
+                        <label>{instruction.label}</label>
+                        <label className="parText parIn">∠</label>
+                        <input
+                            className={`parIn ${inputErrors[`rotation-${instruction.id}-angle`] ? "invalid" : ""}`}
+                            type="text"
+                            onChange={(e) =>
+                                handleInputChange(`rotation-${instruction.id}-angle`, e.target.value)
+                            }
+                        />
+                        <label className="parText parIn">T</label>
+                        <input
+                            className={`parIn ${inputErrors[`rotation-${instruction.id}-time`] ? "invalid" : ""}`}
+                            type="text"
+                            onChange={(e) =>
+                                handleInputChange(`rotation-${instruction.id}-time`, e.target.value)
+                            }
+                        />
+                        <div className="button-container">
+                            <button
+                                className="move-button"
+                                onClick={() => moveInstruction(index, -1)}
+                                disabled={index === 0}
+                            >
+                                ↑
+                            </button>
+                            <button
+                                className="move-button"
+                                onClick={() => moveInstruction(index, 1)}
+                                disabled={index === movementSequence.length - 1}
+                            >
+                                ↓
+                            </button>
+                            <button className="remove-button" onClick={() => handleRemove(instruction.id)}>
+                                −
+                            </button>
+                        </div>
+                    </div>
                 ))}
-            </ul>
-
-            <h3>Execution</h3>
-            <button onClick={startMovementLoop}>Start Sequence</button>
-            <button onClick={stopMovementLoop}>Stop Sequence</button>
-
-            <MovementFileManager />
+            </div>
         </div>
     );
 };
