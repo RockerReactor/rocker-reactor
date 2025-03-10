@@ -8,7 +8,6 @@ import Log from "./components/Log"
 import AddButton from "./components/toolbar/AddButton";
 
 interface Instruction {
-  id: string;
   label: string;
 }
 
@@ -16,9 +15,9 @@ function App() {
   const { PWM, setPWM, SPWM, setSPWM, AngleStep, setAngleStep, writer, addLog, sendConfigCommand } = useContext(AppContext);
 
   const [instructions, setInstructions] = useState<Instruction[]>([
-    { id: "1", label: "Rotation 1" },
-    { id: "2", label: "Rotation 2" },
-    { id: "3", label: "Rotation 3" },
+    {label: "Rotation 1" },
+    {label: "Rotation 2" },
+    {label: "Rotation 3" },
   ]);
 
   const [isRunning, setIsRunning] = useState(false);
@@ -100,7 +99,6 @@ const handleInputChange = (id: string, value: string) => {
     }
 };
 
-
   const moveInstruction = (index: number, direction: number) => {
     const newIndex = index + direction;
     if (newIndex < 0 || newIndex >= instructions.length) return;
@@ -111,17 +109,14 @@ const handleInputChange = (id: string, value: string) => {
 
     setInstructions(updatedInstructions);
   };
+  
 
   const handleAdd = () => {
-    const newId = (instructions.length + 1).toString();
-    setInstructions([
-      ...instructions,
-      { id: newId, label: `Rotation ${newId}` },
-    ]);
+    setInstructions([...instructions, { label: `Rotation ${instructions.length + 1}` }]);
   };
 
-  const handleRemove = (id: string) => {
-    setInstructions(instructions.filter((instruction) => instruction.id !== id));
+  const handleRemove = (index: number) => {
+    setInstructions(instructions.filter((_, i) => i !== index));
   };
 
   const [consoleMessages, setConsoleMessages] = useState<string[]>([]);

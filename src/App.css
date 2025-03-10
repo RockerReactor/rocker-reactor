@@ -20,7 +20,7 @@ body {
 .column.control {
   flex: 0 0 30%; /* Set to a fixed 30% for the left panel */
   max-width: 100%;
-  min-width: 375px; /* To ensure it doesn't exceed this width */
+  min-width: 450px; /*To ensure it doesn't exceed this width */
   display: grid;
   gap: 10px;
   white-space: nowrap;
