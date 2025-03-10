@@ -22,6 +22,7 @@ function App() {
 
   const [isRunning, setIsRunning] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
   const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
 
   const instructionSetRef = useRef<HTMLDivElement | null>(null); // Reference to the instruction set
@@ -49,6 +50,10 @@ function App() {
 
   const toggleRun = () => {
     setIsRunning((prev) => !prev);
+  };
+
+  const toggleConnect = () => {
+    setIsConnected((prev) => !prev);
   };
 
   const toggleLoop = () => {
@@ -180,6 +185,14 @@ const handleInputChange = (id: string, value: string) => {
               🔁
             </button>
             <AddButton />
+            <button
+              type="button"
+              id="connect"
+              className={`tbbutton ${isConnected ? "connected" : ""}`}
+              onClick={toggleConnect}
+            >
+              {isConnected ? "🛑" : "🔗"}
+            </button>
             <button type="button" id="help" className="tbbutton" onClick={handleHelp}>
               ❓
             </button>
