@@ -7,9 +7,11 @@ const RunButton = () => {
 
     const toggleRun = async () => {
         if (isRunning) {
-            await startMovementLoop();
+            setIsRunning(false);
+            stopMovementLoop();
         } else {
-            await stopMovementLoop();
+            setIsRunning(true);
+            startMovementLoop();
         }
     };
 

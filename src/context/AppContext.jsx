@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const AppContext = createContext();
 
@@ -16,6 +17,7 @@ export const AppProvider = ({ children }) => {
     const [position, setPosition] = useState(0);
     const [connected, setConnected] = useState(false);
     const [isRunning, setIsRunning] = useState(false);
+    const isRunningRef = useRef(false);
 
     const connect = async () => {
         if ("serial" in navigator) {
@@ -136,12 +138,15 @@ export const AppProvider = ({ children }) => {
         return Math.round(minAnalog + (angle / 180) * (maxAnalog - minAnalog));
     };
 
+    // isRunning state issue - Fred
     const startMovementLoop = async () => {
-        if (!connected || isRunning) return;
+       if (!connected) return;
 
         setIsRunning(true);
+        isRunningRef.current = true;
         addLog("Starting movement sequence...");
-        addLog(movementSequence.length)
+        addLog(movementSequence.length);
+        addLog(`isRunning is ${isRunning}`);
 
         if (movementSequence.length === 0) {
             addLog("No movement actions found. Exiting StartMovementLoop.");
@@ -152,7 +157,7 @@ export const AppProvider = ({ children }) => {
         while (isRunning) {
             addLog("I'm running");
             for (const action of movementSequence) {
-                addLog(`Processing movement: ${action.angle}° for ${action.duration}s`);
+                addLog(`Processing movement: ${action.angle}° for ${action.time}s`);
                 if (!isRunning) break;
                 
                 const desiredPosition = mapAngleToAnalog(action.angle);
@@ -160,7 +165,7 @@ export const AppProvider = ({ children }) => {
                 await sendCommand(`g${desiredPosition}`);
                 addLog(`Moved to Angle: ${action.angle}°`);
 
-                await new Promise((resolve) => setTimeout(resolve, action.duration * 1000));
+                await new Promise((resolve) => setTimeout(resolve, action.time * 1000));
             }
         }
     };

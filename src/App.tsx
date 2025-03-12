@@ -16,7 +16,7 @@ interface Instruction {
 }
 
 function App() {
-  const { PWM, setPWM, SPWM, setSPWM, AngleStep, setAngleStep, writer, addLog, sendConfigCommand } = useContext(AppContext);
+  const { PWM, setPWM, SPWM, setSPWM, AngleStep, setAngleStep, writer, addLog, sendConfigCommand, isRunning, setIsRunning } = useContext(AppContext);
 
   const [instructions, setInstructions] = useState<Instruction[]>([
     {label: "Rotation 1" },
@@ -24,7 +24,7 @@ function App() {
     {label: "Rotation 3" },
   ]);
 
-  const [isRunning, setIsRunning] = useState(false);
+  
   const [isLooping, setIsLooping] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
@@ -53,7 +53,7 @@ function App() {
   }, []);
 
   const toggleRun = () => {
-    setIsRunning((prev) => !prev);
+    setIsRunning((prev: boolean) => !prev);
   };
 
   const toggleConnect = () => {
