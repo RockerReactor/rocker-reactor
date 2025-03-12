@@ -1,11 +1,16 @@
 import { useContext } from "react";
 import AppContext from "../../context/AppContext";
 
-const RunButton = () => {
-    const { isRunning, setIsRunning } = useContext(AppContext);
 
-    const toggleRun = () => {
-        setIsRunning((prev: any) => !prev);
+const RunButton = () => {
+    const { isRunning, setIsRunning, startMovementLoop, stopMovementLoop } = useContext(AppContext);
+
+    const toggleRun = async () => {
+        if (isRunning) {
+            await startMovementLoop();
+        } else {
+            await stopMovementLoop();
+        }
     };
 
     return (

@@ -6,6 +6,10 @@ import Config from "./components/Config"
 import Control from "./components/Control"
 import Log from "./components/Log"
 import AddButton from "./components/toolbar/AddButton";
+import SaveButton from "./components/toolbar/SaveButton";
+import ImportButton from "./components/toolbar/ImportButton";
+import ConnectionButton from "./components/toolbar/ConnectionButton";
+import RunButton from "./components/toolbar/RunButton"
 
 interface Instruction {
   label: string;
@@ -104,6 +108,7 @@ const handleInputChange = (id: string, value: string) => {
     }
 };
 
+
   const moveInstruction = (index: number, direction: number) => {
     const newIndex = index + direction;
     if (newIndex < 0 || newIndex >= instructions.length) return;
@@ -114,7 +119,6 @@ const handleInputChange = (id: string, value: string) => {
 
     setInstructions(updatedInstructions);
   };
-  
 
   const handleAdd = () => {
     setInstructions([...instructions, { label: `Rotation ${instructions.length + 1}` }]);
@@ -162,20 +166,9 @@ const handleInputChange = (id: string, value: string) => {
 
           {/*Toolbar*/}
           <div className="toolbar">
-            <button
-              type="button"
-              id="run"
-              className={`tbbutton ${isRunning ? "running" : ""}`}
-              onClick={toggleRun}
-            >
-              {isRunning ? "⏹️" : "▶️"}
-            </button>
-            <button type="button" id="import" className="tbbutton" onClick={handleImport}>
-              ⬆️
-            </button>
-            <button type="button" id="save" className="tbbutton" onClick={handleSave}>
-              💾
-            </button>
+            <RunButton />
+            <ImportButton />
+            <SaveButton />
             <button
               type="button"
               id="loop"
@@ -185,14 +178,7 @@ const handleInputChange = (id: string, value: string) => {
               🔁
             </button>
             <AddButton />
-            <button
-              type="button"
-              id="connect"
-              className={`tbbutton ${isConnected ? "connected" : ""}`}
-              onClick={toggleConnect}
-            >
-              {isConnected ? "🛑" : "🔗"}
-            </button>
+            <ConnectionButton />
             <button type="button" id="help" className="tbbutton" onClick={handleHelp}>
               ❓
             </button>
