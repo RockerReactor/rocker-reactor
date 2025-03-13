@@ -16,7 +16,6 @@ export const AppProvider = ({ children }) => {
     const [AngleStep, setAngleStep] = useState(10);
     const [position, setPosition] = useState(0);
     const [connected, setConnected] = useState(false);
-    const [isRunning, setIsRunning] = useState(false);
     const isRunningRef = useRef(false);
 
     const connect = async () => {
@@ -172,6 +171,7 @@ export const AppProvider = ({ children }) => {
 
     const stopMovementLoop = () => {
         setIsRunning(false);
+        isRunningRef.current = false;
         addLog("Stopping movement sequence...");
         sendCommand(`g${mapAngleToAnalog(0)}`);
     };
@@ -229,7 +229,9 @@ export const AppProvider = ({ children }) => {
             readableStreamClosed, writableStreamClosed,
             setReadableStreamClosed, setWritableStreamClosed, 
             saveMovementSequence, loadMovementSequence,
-            connect, disconnect
+            connect, disconnect,
+            isRunningRef, mapAngleToAnalog, connected,
+            setConnected,
         }}>
             {children}
         </AppContext.Provider>
