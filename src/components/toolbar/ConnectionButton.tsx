@@ -4,10 +4,10 @@ import "../../App.css";
 
 const ConnectionButton = () => {
 
-    const {connect, disconnect, isConnected, setIsConnected} = useContext(AppContext);
+    const {connect, disconnect, isConnected, setIsConnected, connected, setConnected} = useContext(AppContext);
 
     const toggleConnect = async () => {
-        if (isConnected) {
+        if (connected) {
             await disconnect();
         } else {
             await connect();
@@ -18,7 +18,7 @@ const ConnectionButton = () => {
         <button
         type="button"
         id="connect"
-        className={`tbbutton ${isConnected ? "connected" : ""}`}
+        className={`tbbutton ${connected ? "connected" : ""}`}
         onClick={toggleConnect}
       >
         {isConnected ? "🛑" : "🔗"}

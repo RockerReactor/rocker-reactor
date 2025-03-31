@@ -4,7 +4,7 @@ import AppContext from "../context/AppContext";
 import "../App.css";
 
 const Config = () => {
-    const { PWM, setPWM, SPWM, setSPWM, AngleStep, setAngleStep, writer, addLog, } = useContext(AppContext);
+    const { PWM, setPWM, SPWM, setSPWM, AngleStep, setAngleStep, writer, addLog, cycles, setCycles } = useContext(AppContext);
     const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
 
     // Function to send the configuration command to the Arduino
@@ -15,7 +15,7 @@ const Config = () => {
         }
         try {
             await writer.write(command + "\n");  // Send command to Arduino
-            addLog(`Sent command: ${command}`);
+            //addLog(`Sent command: ${command}`);
         } catch (error) {
             addLog(`Error sending command: ${error}`);
         }
@@ -43,6 +43,9 @@ const Config = () => {
                     setPWM(numValue);
                     sendConfigCommand(`p${numValue}`);
                     break;
+                    case "cycles":
+                        setCycles(numValue);
+                        break;
                 default:
                     break;
             }

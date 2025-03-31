@@ -17,6 +17,7 @@ export const AppProvider = ({ children }) => {
     const [position, setPosition] = useState(0);
     const [connected, setConnected] = useState(false);
     const isRunningRef = useRef(false);
+    const [cycles, setCycles] = useState(0);
 
     const connect = async () => {
         if ("serial" in navigator) {
@@ -44,39 +45,80 @@ export const AppProvider = ({ children }) => {
                 setReadableStreamClosed(readableStreamClosed);
                 setWritableStreamClosed(writableStreamClosed);
                 setConnected(true);
-                addLog("Connected to serial port.");
+                //addLog("Connected to serial port.");
             } catch (error) {
-                addLog(`Error connecting: ${error}`);
+                //addLog(`Error connecting: ${error}`);
             }
         } else {
-            addLog("Web Serial API not supported.");
+            //addLog("Web Serial API not supported.");
         }
     };
 
+    useEffect(() => {
+        let cancelled = false;
+        let buffer = "";
+    
+        const listenToPort = async () => {
+            if (!reader) return;
+    
+            try {
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done || cancelled) break;
+    
+                    if (value) {
+                        buffer += value;
+    
+                        let lines = buffer.split("\n");
+                        buffer = lines.pop(); // Save the incomplete part (if any)
+    
+                        for (const line of lines) {
+                            const trimmed = line.trim();
+                            if (trimmed) {
+                                addLog(`Serial: ${trimmed}`);
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    addLog(`Error reading from serial port: ${error}`);
+                }
+            }
+        };
+    
+        listenToPort();
+    
+        return () => {
+            cancelled = true;
+        };
+    }, [reader]);
+    
+
     const disconnect = async () => {
         try {
-            addLog("Starting disconnect process...");
+            //addLog("Starting disconnect process...");
 
             if (reader) {
-                addLog("Attempting to cancel and release reader...");
+            //addLog("Attempting to cancel and release reader...");
                 try {
                     await reader.cancel();
-                    await readableStreamClosed.catch(() => { addLog("Reader cancelation error ignored."); });
+                    await readableStreamClosed.catch(() => { /**addLog("Reader cancelation error ignored.");*/ });
                     await reader.releaseLock();
-                    addLog("Reader canceled and released.");
+                    //addLog("Reader canceled and released.");
                 } catch (err) {
-                    addLog(`Error canceling reader: ${err}`);
+                    //addLog(`Error canceling reader: ${err}`);
                 }
                 setReader(null);
             }
     
             if (writer) {
-                addLog("Attempting to close and release writer...");
+                //addLog("Attempting to close and release writer...");
                 try {
                     await writer.close();
                     await writableStreamClosed;
                     await writer.releaseLock();
-                    addLog("Writer closed and released.");
+                    //addLog("Writer closed and released.");
                 } catch (err) {
                     addLog(`Error closing writer: ${err}`);
                 }
@@ -85,20 +127,20 @@ export const AppProvider = ({ children }) => {
     
             if (port) {
                 try {
-                    addLog("Attempting to release streams before closing port...");
+                    //addLog("Attempting to release streams before closing port...");
                     if (port.readable) {
                         //await port.readable.cancel();
                         //await port.readable.pipeTo(new WritableStream()).catch(() => {});
-                        addLog("Readable stream drained.");
+                        //addLog("Readable stream drained.");
                     }
                     if (port.writable) {
                         //await port.writable.close();
-                        addLog("Writable stream closed.");
+                        //addLog("Writable stream closed.");
                     }
                     
-                    addLog("Attempting to close serial port...");
+                    //addLog("Attempting to close serial port...");
                     await port.close();
-                    addLog("Port closed successfully.");
+                    //addLog("Port closed successfully.");
                 } catch (err) {
                     addLog(`Error closing port: ${err}`);
                 }
@@ -106,7 +148,7 @@ export const AppProvider = ({ children }) => {
             }
     
             setConnected(false);
-            addLog("Disconnected successfully.");
+            //addLog("Disconnected successfully.");
         } catch (error) {
             addLog(`Error disconnecting: ${error}`);
         }
@@ -120,9 +162,9 @@ export const AppProvider = ({ children }) => {
     const sendCommand = async (command) => {
         if (writer) {
             try {
-                addLog(`Attempting to send: ${command}`);
+                //addLog(`Attempting to send: ${command}`);
                 await writer.write(command + "\n");
-                addLog(`Command sent: ${command}`);
+                //addLog(`Command sent: ${command}`);
             } catch (error) {
                 addLog(`Error writing to serial port: ${error}`);
             }
@@ -138,7 +180,7 @@ export const AppProvider = ({ children }) => {
     };
 
     // isRunning state issue - Fred
-    const startMovementLoop = async () => {
+   /**  const startMovementLoop = async () => {
        if (!connected) return;
 
         setIsRunning(true);
@@ -175,6 +217,7 @@ export const AppProvider = ({ children }) => {
         addLog("Stopping movement sequence...");
         sendCommand(`g${mapAngleToAnalog(0)}`);
     };
+    */
 
         // Function to save the movement sequence to JSON file
         const saveMovementSequence = async () => {
@@ -225,13 +268,13 @@ export const AppProvider = ({ children }) => {
             movementSequence, setMovementSequence, log, addLog,
             PWM, setPWM, SPWM, setSPWM, AngleStep, setAngleStep, 
             position, setPosition, connected, setConnected,
-            sendCommand, startMovementLoop, stopMovementLoop, 
+            sendCommand,  
             readableStreamClosed, writableStreamClosed,
             setReadableStreamClosed, setWritableStreamClosed, 
             saveMovementSequence, loadMovementSequence,
             connect, disconnect,
             isRunningRef, mapAngleToAnalog, connected,
-            setConnected,
+            setConnected, cycles, setCycles
         }}>
             {children}
         </AppContext.Provider>

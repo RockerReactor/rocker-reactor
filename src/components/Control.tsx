@@ -62,17 +62,17 @@ const Control = () => {
         updatedSequence.splice(newIndex, 0, movedItem);
     
         setMovementSequence(updatedSequence);
-        addLog(`Moved instruction from position ${index + 1} to ${newIndex + 1}`);
+        //addLog(`Moved instruction from position ${index + 1} to ${newIndex + 1}`);
     };
 
     const handleAdd = () => {
         setMovementSequence([...movementSequence, {}]);
-        addLog(`Added new instruction at position ${movementSequence.length + 1}`);
+        //addLog(`Added new instruction at position ${movementSequence.length + 1}`);
     };
 
     const handleRemove = (index: number) => {
         setMovementSequence(movementSequence.filter((_:any, i:number) => i !== index));
-        addLog(`Removed instruction at position ${index + 1}`);
+        //addLog(`Removed instruction at position ${index + 1}`);
     };
 
     return (
