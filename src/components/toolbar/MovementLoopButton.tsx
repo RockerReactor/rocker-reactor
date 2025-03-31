@@ -4,7 +4,6 @@ import "../../App.css";
 
 const MovementLoopButton = () => {
 
-    
     return (
         null      
     );
