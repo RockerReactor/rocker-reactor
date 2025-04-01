@@ -1,12 +1,9 @@
-import { useContext } from "react";
-import AppContext from "../../context/AppContext";
-import "../../App.css";
+import { useContext } from 'react'
+import AppContext from '../../context/AppContext'
+import '../../App.css'
 
 const MovementLoopButton = () => {
+    return null
+}
 
-    return (
-        null      
-    );
-};
-
-export default MovementLoopButton;
+export default MovementLoopButton
