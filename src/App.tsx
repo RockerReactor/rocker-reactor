@@ -17,7 +17,8 @@ interface Instruction {
 
 function App() {
     const {
-        PWM, setPWM,
+        PWM,
+        setPWM,
         SPWM,
         setSPWM,
         AngleStep,

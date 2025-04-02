@@ -28,16 +28,16 @@ jobs:
               id: prettier-run
               uses: rutajdash/prettier-cli-action@v1.0.0
               with:
-                config_path: .prettierrc.json
-                ignore_path: .prettierignore
-                file_pattern: '.'
+                  config_path: .prettierrc.json
+                  ignore_path: .prettierignore
+                  file_pattern: '.'
 
             - name: Prettier Output
               if: ${{ failure() }}
               shell: bash
               run: |
-                echo "The following files are not formatted:"
-                echo "${{ steps.prettier-run.outputs.prettier_output }}"
+                  echo "The following files are not formatted:"
+                  echo "${{ steps.prettier-run.outputs.prettier_output }}"
 
     Testing:
         runs-on: ubuntu-latest
