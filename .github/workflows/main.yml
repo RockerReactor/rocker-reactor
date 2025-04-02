@@ -24,16 +24,23 @@ jobs:
     Formatting:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: '22.11.0'
-            - name: Install dependencies
-              run: |
-                  npm install
-            - name: Prettier Check
-              run: |
-                  npx prettier . --check
+
+
+        - name: Run Prettier Check
+          id: prettier-run
+          uses: rutajdash/prettier-cli-action@v1.0.0
+          with:
+            config_path: ../.prettierrc.json
+            ignore_path: ../.prettierignore
+
+
+
+      - name: Prettier Output
+        if: ${{ failure() }}
+        shell: bash
+        run: |
+          echo "The following files are not formatted:"
+          echo "${{steps.prettier-run.outputs.prettier_output}}"
     Testing:
         runs-on: ubuntu-latest
         steps:
@@ -47,3 +54,6 @@ jobs:
             - name: Run tests
               run: |
                   npm run test
+
+    
+                  
