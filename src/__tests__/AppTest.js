@@ -4,13 +4,14 @@ import App from '../App'
 import { AppProvider } from '../context/AppContext.jsx'
 import { link } from 'fs'
 
-it('renders learn react link', () => {
-    render(
+it('app has three buttons', () => {
+    const container = render(
         <AppProvider>
             <App />
         </AppProvider>
     )
     //const linkElement = screen.getByText(/learn react/i)
     //expect(linkElement).toBeInTheDocument()
-    expect(1).toBe(1)
+
+    expect(container.getElementsByClassName('tbbutton').length).toBe(2)
 })
