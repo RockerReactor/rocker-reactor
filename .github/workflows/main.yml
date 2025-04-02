@@ -32,7 +32,7 @@ jobs:
                 ignore_path: .prettierignore
 
             - name: Prettier Output
-              if: failure()
+              if: ${{ failure() }}
               shell: bash
               run: |
                 echo "The following files are not formatted:"
