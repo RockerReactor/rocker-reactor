@@ -30,6 +30,7 @@ jobs:
               with:
                 config_path: .prettierrc.json
                 ignore_path: .prettierignore
+                file_pattern: '.'
 
             - name: Prettier Output
               if: ${{ failure() }}
