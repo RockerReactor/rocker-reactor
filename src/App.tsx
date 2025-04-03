@@ -10,6 +10,7 @@ import SaveButton from "./components/toolbar/SaveButton";
 import ImportButton from "./components/toolbar/ImportButton";
 import ConnectionButton from "./components/toolbar/ConnectionButton";
 import RunButton from "./components/toolbar/RunButton"
+import InfiniteRunButton from "./components/toolbar/MovementLoopButton";
 
 interface Instruction {
   label: string;
@@ -169,14 +170,15 @@ const handleInputChange = (id: string, value: string) => {
             <RunButton />
             <ImportButton />
             <SaveButton />
-            <button
+            <InfiniteRunButton />
+           {/**  <button
               type="button"
               id="loop"
               className={`tbbutton ${isLooping ? "looping" : ""}`}
               onClick={toggleLoop}
             >
               🔁
-            </button>
+            </button> */}
             <AddButton />
             <ConnectionButton />
             <button type="button" id="help" className="tbbutton" onClick={handleHelp}>

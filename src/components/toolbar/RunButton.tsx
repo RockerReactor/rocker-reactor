@@ -3,7 +3,8 @@ import AppContext from "../../context/AppContext";
 
 const RunButton = () => {
     const [isRunning, setIsRunning] = useState(false);
-    const { connected, addLog, movementSequence, sendCommand, mapAngleToAnalog, cycles } = useContext(AppContext);
+    const { connected, addLog, movementSequence, sendCommand, 
+        mapAngleToAnalog, cycles, waitForMessage } = useContext(AppContext);
 
     useEffect(() => {
         let isActive = true; // Flag to keep track of the loop state
@@ -29,6 +30,7 @@ const RunButton = () => {
                     const desiredPosition = mapAngleToAnalog(action.angle);
                     //addLog("Trying to send movement command");
                     await sendCommand(`g${desiredPosition}`);
+                    await waitForMessage("Movement Complete");
                     addLog(`Moved to Angle: ${action.angle}°`);
 
                     await new Promise(resolve => setTimeout(resolve, action.time * 1000));
@@ -36,7 +38,7 @@ const RunButton = () => {
             }
             
             setIsRunning(false);
-            sendCommand(`g${mapAngleToAnalog(105)}`);
+            sendCommand(`g${mapAngleToAnalog(90)}`);
             addLog("Movement sequence completed.");
         };
 
@@ -53,7 +55,7 @@ const RunButton = () => {
         if (isRunning) {
             setIsRunning(false);
             addLog("Stopping movement sequence...");
-            sendCommand(`g${mapAngleToAnalog(105)}`);
+            sendCommand(`g${mapAngleToAnalog(90)}`);
         } else {
             setIsRunning(true);
         }

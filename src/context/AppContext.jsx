@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+    const messageListeners = useRef([]);
     const [port, setPort] = useState(null);
     const [writer, setWriter] = useState(null);
     const [reader, setReader] = useState(null);
@@ -68,14 +69,15 @@ export const AppProvider = ({ children }) => {
     
                     if (value) {
                         buffer += value;
-    
-                        let lines = buffer.split("\n");
-                        buffer = lines.pop(); // Save the incomplete part (if any)
+                        const lines = buffer.split("\n");
+                        buffer = lines.pop(); // keep incomplete line
     
                         for (const line of lines) {
                             const trimmed = line.trim();
                             if (trimmed) {
                                 addLog(`Serial: ${trimmed}`);
+                                // Notify all waiting listeners
+                                messageListeners.current.forEach((cb) => cb(trimmed));
                             }
                         }
                     }
@@ -93,6 +95,34 @@ export const AppProvider = ({ children }) => {
             cancelled = true;
         };
     }, [reader]);
+    
+
+    const waitForMessage = (expectedMessage, timeout = 50000) => {
+        return new Promise((resolve, reject) => {
+            const handler = (message) => {
+                if (message === expectedMessage) {
+                    clearTimeout(timer);
+                    unsubscribe();
+                    resolve(message);
+                }
+            };
+    
+            const unsubscribe = () => {
+                messageListeners.current = messageListeners.current.filter((cb) => cb !== handler);
+            };
+    
+            // Timeout safeguard
+            const timer = setTimeout(() => {
+                unsubscribe();
+                reject(`Timeout waiting for message: "${expectedMessage}"`);
+            }, timeout);
+    
+            // Register this handler
+            messageListeners.current.push(handler);
+        });
+    };
+    
+    
     
 
     const disconnect = async () => {
@@ -174,9 +204,9 @@ export const AppProvider = ({ children }) => {
     };
 
     const mapAngleToAnalog = (angle) => {
-        const minAnalog = 100;
-        const maxAnalog = 900;
-        return Math.round(minAnalog + (angle / 180) * (maxAnalog - minAnalog));
+        const minAnalog = 400;
+        const maxAnalog = 1000;
+        return Math.round(minAnalog + (angle / 360) * (maxAnalog - minAnalog));
     };
 
     // isRunning state issue - Fred
@@ -274,7 +304,7 @@ export const AppProvider = ({ children }) => {
             saveMovementSequence, loadMovementSequence,
             connect, disconnect,
             isRunningRef, mapAngleToAnalog, connected,
-            setConnected, cycles, setCycles
+            setConnected, cycles, setCycles, waitForMessage
         }}>
             {children}
         </AppContext.Provider>
