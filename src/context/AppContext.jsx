@@ -209,47 +209,7 @@ export const AppProvider = ({ children }) => {
         return Math.round(minAnalog + (angle / 360) * (maxAnalog - minAnalog));
     };
 
-    // isRunning state issue - Fred
-   /**  const startMovementLoop = async () => {
-       if (!connected) return;
-
-        setIsRunning(true);
-        isRunningRef.current = true;
-        addLog("Starting movement sequence...");
-        addLog(movementSequence.length);
-        addLog(`isRunning is ${isRunning}`);
-
-        if (movementSequence.length === 0) {
-            addLog("No movement actions found. Exiting StartMovementLoop.");
-            setIsRunning(false);
-            return;
-        }
-
-        while (isRunning) {
-            addLog("I'm running");
-            for (const action of movementSequence) {
-                addLog(`Processing movement: ${action.angle}° for ${action.time}s`);
-                if (!isRunning) break;
-                
-                const desiredPosition = mapAngleToAnalog(action.angle);
-                addLog("Trying to send movement command");
-                await sendCommand(`g${desiredPosition}`);
-                addLog(`Moved to Angle: ${action.angle}°`);
-
-                await new Promise((resolve) => setTimeout(resolve, action.time * 1000));
-            }
-        }
-    };
-
-    const stopMovementLoop = () => {
-        setIsRunning(false);
-        isRunningRef.current = false;
-        addLog("Stopping movement sequence...");
-        sendCommand(`g${mapAngleToAnalog(0)}`);
-    };
-    */
-
-        // Function to save the movement sequence to JSON file
+        //Function to save the movement sequence to JSON file
         const saveMovementSequence = async () => {
             try {
                 const fileHandle = await (window).showSaveFilePicker({
@@ -271,7 +231,7 @@ export const AppProvider = ({ children }) => {
             }
         };
     
-        // Function to load the movement sequence from JSON file
+        //Function to load the movement sequence from JSON file
         const loadMovementSequence = async () => {
             try {
                 const [fileHandle] = await (window).showOpenFilePicker({

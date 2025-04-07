@@ -17,13 +17,13 @@ const RunButton = () => {
                 return;
             }
 
-            //addLog("Starting movement sequence...");
+            addLog("Starting movement sequence...");
             addLog(`Total movements: ${movementSequence.length}, Cycles: ${cycles}`);
 
             for (let i = 0; i < cycles && isActive; i++) {
                 addLog(`Cycle ${i + 1} of ${cycles}`);
                 for (const action of movementSequence) {
-                    if (!isActive) return; // Stop immediately if flag changes
+                    if (!isActive) return; //Stop immediately if flag changes
                     
                     addLog(`Processing movement: ${action.angle}° for ${action.time}s`);
                     
@@ -47,7 +47,7 @@ const RunButton = () => {
         }
 
         return () => {
-            isActive = false; // Cleanup function to prevent unwanted execution after state change
+            isActive = false; //Cleanup function to prevent unwanted execution after state change
         };
     }, [isRunning]);
 
