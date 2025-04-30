@@ -204,8 +204,8 @@ export const AppProvider = ({ children }) => {
     };
 
     const mapAngleToAnalog = (angle) => {
-        const minAnalog = 376;
-        const maxAnalog = 976;
+        const minAnalog = 260;
+        const maxAnalog = 860;
         return Math.round(minAnalog + (angle / 360) * (maxAnalog - minAnalog));
     };
 
