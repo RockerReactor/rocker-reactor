@@ -5,7 +5,7 @@ import App from '../App'
 import { AppProvider } from '../context/AppContext.jsx'
 import { link } from 'fs'
 
-it('app has three buttons', () => {
+it('first button rendered', () => {
     render(
         <AppProvider>
             <App />
@@ -14,7 +14,18 @@ it('app has three buttons', () => {
     //const linkElement = screen.getByText(/learn react/i)
     //expect(linkElement).toBeInTheDocument()
 
-    expect(screen.getByText(/🔁/)).toBeInTheDocument();
-        expect(screen.getByText(/❓/)).toBeInTheDocument();
-        expect(screen.getByText(/⚙️/)).toBeInTheDocument();
-    })
+    expect(screen.getByText(/🔁/)).toBeInTheDocument()
+})
+
+it('next two buttons rendered', () => {
+    render(
+        <AppProvider>
+            <App />
+        </AppProvider>
+    )
+    //const linkElement = screen.getByText(/learn react/i)
+    //expect(linkElement).toBeInTheDocument()
+
+    expect(screen.getByText(/❓/)).toBeInTheDocument()
+    expect(screen.getByText(/⚙️/)).toBeInTheDocument()
+})
