@@ -4,20 +4,21 @@ import { useEffect, useRef } from 'react'
 const AppContext = createContext()
 
 export const AppProvider = ({ children }) => {
-    const [port, setPort] = useState(null)
-    const [writer, setWriter] = useState(null)
-    const [reader, setReader] = useState(null)
-    const [readableStreamClosed, setReadableStreamClosed] = useState(null)
-    const [writableStreamClosed, setWritableStreamClosed] = useState(null)
-    const [movementSequence, setMovementSequence] = useState([])
-    const [log, setLog] = useState([])
-    const [PWM, setPWM] = useState(175)
-    const [SPWM, setSPWM] = useState(175)
-    const [AngleStep, setAngleStep] = useState(10)
-    const [position, setPosition] = useState(0)
-    const [connected, setConnected] = useState(false)
-    const isRunningRef = useRef(false)
-    const [cycles, setCycles] = useState(0)
+    const messageListeners = useRef([]);
+    const [port, setPort] = useState(null);
+    const [writer, setWriter] = useState(null);
+    const [reader, setReader] = useState(null);
+    const [readableStreamClosed, setReadableStreamClosed] = useState(null);
+    const [writableStreamClosed, setWritableStreamClosed] = useState(null);
+    const [movementSequence, setMovementSequence] = useState([]);
+    const [log, setLog] = useState([]);
+    const [PWM, setPWM] = useState(175);
+    const [SPWM, setSPWM] = useState(175);
+    const [AngleStep, setAngleStep] = useState(10);
+    const [position, setPosition] = useState(0);
+    const [connected, setConnected] = useState(false);
+    const isRunningRef = useRef(false);
+    const [cycles, setCycles] = useState(0);
 
     const connect = async () => {
         if ('serial' in navigator) {
@@ -69,15 +70,16 @@ export const AppProvider = ({ children }) => {
                     if (done || cancelled) break
 
                     if (value) {
-                        buffer += value
-
-                        let lines = buffer.split('\n')
-                        buffer = lines.pop() //Save the incomplete part (if any)
-
+                        buffer += value;
+                        const lines = buffer.split("\n");
+                        buffer = lines.pop(); // keep incomplete line
+    
                         for (const line of lines) {
                             const trimmed = line.trim()
                             if (trimmed) {
-                                addLog(`Serial: ${trimmed}`)
+                                addLog(`Serial: ${trimmed}`);
+                                // Notify all waiting listeners
+                                messageListeners.current.forEach((cb) => cb(trimmed));
                             }
                         }
                     }
@@ -87,14 +89,43 @@ export const AppProvider = ({ children }) => {
                     addLog(`Error reading from serial port: ${error}`)
                 }
             }
-        }
-
-        listenToPort()
-
+        };
+    
+        listenToPort();
+    
         return () => {
-            cancelled = true
-        }
-    }, [reader])
+            cancelled = true;
+        };
+    }, [reader]);
+    
+
+    const waitForMessage = (expectedMessage, timeout = 50000) => {
+        return new Promise((resolve, reject) => {
+            const handler = (message) => {
+                if (message === expectedMessage) {
+                    clearTimeout(timer);
+                    unsubscribe();
+                    resolve(message);
+                }
+            };
+    
+            const unsubscribe = () => {
+                messageListeners.current = messageListeners.current.filter((cb) => cb !== handler);
+            };
+    
+            // Timeout safeguard
+            const timer = setTimeout(() => {
+                unsubscribe();
+                reject(`Timeout waiting for message: "${expectedMessage}"`);
+            }, timeout);
+    
+            // Register this handler
+            messageListeners.current.push(handler);
+        });
+    };
+    
+    
+    
 
     const disconnect = async () => {
         try {
@@ -176,10 +207,10 @@ export const AppProvider = ({ children }) => {
     }
 
     const mapAngleToAnalog = (angle) => {
-        const minAnalog = 100
-        const maxAnalog = 900
-        return Math.round(minAnalog + (angle / 180) * (maxAnalog - minAnalog))
-    }
+        const minAnalog = 260;
+        const maxAnalog = 860;
+        return Math.round(minAnalog + (angle / 360) * (maxAnalog - minAnalog));
+    };
 
     //Function to save the movement sequence to JSON file
     const saveMovementSequence = async () => {
@@ -225,45 +256,19 @@ export const AppProvider = ({ children }) => {
     }
 
     return (
-        <AppContext.Provider
-            value={{
-                port,
-                setPort,
-                writer,
-                setWriter,
-                reader,
-                setReader,
-                movementSequence,
-                setMovementSequence,
-                log,
-                addLog,
-                PWM,
-                setPWM,
-                SPWM,
-                setSPWM,
-                AngleStep,
-                setAngleStep,
-                position,
-                setPosition,
-                connected,
-                setConnected,
-                sendCommand,
-                readableStreamClosed,
-                writableStreamClosed,
-                setReadableStreamClosed,
-                setWritableStreamClosed,
-                saveMovementSequence,
-                loadMovementSequence,
-                connect,
-                disconnect,
-                isRunningRef,
-                mapAngleToAnalog,
-                connected,
-                setConnected,
-                cycles,
-                setCycles,
-            }}
-        >
+        <AppContext.Provider value={{
+            port, setPort, writer, setWriter, reader, setReader,
+            movementSequence, setMovementSequence, log, addLog,
+            PWM, setPWM, SPWM, setSPWM, AngleStep, setAngleStep, 
+            position, setPosition, connected, setConnected,
+            sendCommand,  
+            readableStreamClosed, writableStreamClosed,
+            setReadableStreamClosed, setWritableStreamClosed, 
+            saveMovementSequence, loadMovementSequence,
+            connect, disconnect,
+            isRunningRef, mapAngleToAnalog, connected,
+            setConnected, cycles, setCycles, waitForMessage
+        }}>
             {children}
         </AppContext.Provider>
     )

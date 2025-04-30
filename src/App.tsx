@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react'
-import './App.css'
-import { useContext } from 'react'
-import AppContext from './context/AppContext'
-import Config from './components/Config'
-import Control from './components/Control'
-import Log from './components/Log'
-import AddButton from './components/toolbar/AddButton'
-import SaveButton from './components/toolbar/SaveButton'
-import ImportButton from './components/toolbar/ImportButton'
-import ConnectionButton from './components/toolbar/ConnectionButton'
-import RunButton from './components/toolbar/RunButton'
+import React, { useState, useEffect, useRef } from "react";
+import "./App.css";
+import { useContext } from "react";
+import AppContext from "./context/AppContext";
+import Config from "./components/Config"
+import Control from "./components/Control"
+import Log from "./components/Log"
+import AddButton from "./components/toolbar/AddButton";
+import SaveButton from "./components/toolbar/SaveButton";
+import ImportButton from "./components/toolbar/ImportButton";
+import ConnectionButton from "./components/toolbar/ConnectionButton";
+import RunButton from "./components/toolbar/RunButton"
+import InfiniteRunButton from "./components/toolbar/MovementLoopButton";
 
 interface Instruction {
     label: string
@@ -188,39 +189,30 @@ function App() {
                     {/*Instruction Set*/}
                     <Control />
 
-                    {/*Toolbar*/}
-                    <div className="toolbar">
-                        <RunButton />
-                        <ImportButton />
-                        <SaveButton />
-                        <button
-                            type="button"
-                            id="loop"
-                            className={`tbbutton ${isLooping ? 'looping' : ''}`}
-                            onClick={toggleLoop}
-                        >
-                            🔁
-                        </button>
-                        <AddButton />
-                        <ConnectionButton />
-                        <button
-                            type="button"
-                            id="help"
-                            className="tbbutton"
-                            onClick={handleHelp}
-                        >
-                            ❓
-                        </button>
-                        <button
-                            type="button"
-                            id="calibrate"
-                            className="tbbutton"
-                            onClick={handleCalibrate}
-                        >
-                            ⚙️
-                        </button>
-                    </div>
-                </div>
+          {/*Toolbar*/}
+          <div className="toolbar">
+            <RunButton />
+            <ImportButton />
+            <SaveButton />
+            <InfiniteRunButton />
+           {/**  <button
+              type="button"
+              id="loop"
+              className={`tbbutton ${isLooping ? "looping" : ""}`}
+              onClick={toggleLoop}
+            >
+              🔁
+            </button> */}
+            <AddButton />
+            <ConnectionButton />
+            <button type="button" id="help" className="tbbutton" onClick={handleHelp}>
+              ❓
+            </button>
+            <button type="button" id="calibrate" className="tbbutton" onClick={handleCalibrate}>
+              ⚙️
+            </button>
+          </div>
+        </div>
 
                 {/*Right Side*/}
                 <div className="column view">
